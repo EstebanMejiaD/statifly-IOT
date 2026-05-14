@@ -6,8 +6,12 @@
 
 #include <Adafruit_Sensor.h>
 
+/*
+ * Manejo del sensor IMU (MPU6050) para obtener datos de aceleración y giroscopio. 
+ * Se inicializa el sensor, se configuran los rangos y se leen los datos en cada actualización. 
+ * Los datos se almacenan en una estructura `IMUData` para su uso posterior en el programa.
+ */
 Adafruit_MPU6050 mpu;
-
 IMUData imuData;
 
 bool initIMU() {

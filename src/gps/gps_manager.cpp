@@ -6,6 +6,12 @@
 
 #include "../config/pins.h"
 
+
+/*
+ * Manejo del sensor GPS (TinyGPS++) para obtener datos de posición y velocidad.
+ * Se inicializa el puerto serial para la comunicación con el módulo GPS y se leen los datos en cada actualización.
+ * Los datos se almacenan en una estructura `GPSData` para su uso posterior en el programa.
+ */
 TinyGPSPlus gps;
 
 HardwareSerial gpsSerial(1);

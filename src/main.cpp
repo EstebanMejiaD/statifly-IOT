@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "esp32-setup.h"
 #include "leds/led_manager.h"
 
 #include "gps/gps_manager.h"
@@ -17,9 +18,7 @@
 
 void setup() {
 
-  Serial.begin(115200);
-
-  Serial.println("Statifly V1 Initializing...");
+  esp32_serial_setup(115200);
 
   initLEDs();
 
