@@ -1,53 +1,60 @@
 {
   "version": 1,
-  "author": "Automatización y Robótica Inacap",
+  "author": "EstebanMejiaD",
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-v1", "id": "esp", "top": -12.32, "left": 24, "attrs": {} },
-    { "type": "wokwi-led", "id": "led1", "top": 63.6, "left": -92.2, "attrs": { "color": "red" } },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 28.8, "left": -52.76, "attrs": {} },
+    { "type": "chip-gps-neo6", "id": "chip1", "top": -56.58, "left": 187.2,"attrs": {"src": "chips/gps-neo6.chip.json"}
+},
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": 51.82, "left": 232.72, "attrs": {} },
+    { "type": "wokwi-microsd-card", "id": "sd1", "top": 211.43, "left": 86.47, "attrs": {} },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": 188.6,
+      "left": -201.6,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "rgb1",
+      "top": 61.6,
+      "left": -219.7,
+      "attrs": { "common": "cathode" }
+    },
     {
       "type": "wokwi-led",
-      "id": "led2",
-      "top": 82.8,
-      "left": -130.6,
+      "id": "led1",
+      "top": 63.6,
+      "left": -149.8,
       "attrs": { "color": "red" }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r1",
-      "top": 119.15,
-      "left": -67.2,
-      "attrs": { "value": "220" }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r2",
-      "top": 99.95,
-      "left": -48,
-      "attrs": { "value": "220" }
-    },
-    { "type": "wokwi-gnd", "id": "gnd1", "top": 134.4, "left": -125.4, "attrs": {} },
-    { "type": "wokwi-gnd", "id": "gnd2", "top": 124.8, "left": -87, "attrs": {} },
-    {
-      "type": "wokwi-pushbutton-6mm",
-      "id": "btn1",
-      "top": 74.6,
-      "left": 153.6,
-      "attrs": { "color": "green" }
-    },
-    { "type": "wokwi-gnd", "id": "gnd3", "top": 124.8, "left": 143.4, "attrs": {} }
+    }
   ],
   "connections": [
-    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
-    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
-    [ "gnd2:GND", "led1:C", "black", [ "v0" ] ],
-    [ "gnd1:GND", "led2:C", "black", [ "v-9.6" ] ],
-    [ "led1:A", "r2:1", "green", [ "v0" ] ],
-    [ "led2:A", "r1:1", "green", [ "v0" ] ],
-    [ "r2:2", "esp:D14", "green", [ "v0" ] ],
-    [ "r1:2", "esp:D12", "green", [ "v0", "h18", "v-9.6" ] ],
-    [ "btn1:1.l", "esp:D5", "green", [ "h0" ] ],
-    [ "btn1:2.l", "gnd3:GND", "green", [ "h0" ] ]
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "chip1:VCC", "red", [ "h-19.05", "v-76.8", "h153.6" ] ],
+    [ "esp:GND.2", "chip1:GND", "black", [ "v-28.8" ] ],
+    [ "imu1:VCC", "esp:3V3", "red", [ "v-67.2", "h-307.12", "v9.6" ] ],
+    [ "imu1:GND", "esp:GND.2", "black", [ "v-57.6", "h-182.32", "v19.2" ] ],
+    [ "imu1:SCL", "esp:22", "blue", [ "v-38.4", "h-163.12", "v38.4" ] ],
+    [ "imu1:SDA", "esp:21", "purple", [ "v-19.2", "h-134.32", "v48", "h-9.6" ] ],
+    [ "sd1:CS", "esp:5", "green", [ "h57.6", "v-134.34" ] ],
+    [ "sd1:SCK", "esp:18", "green", [ "h48", "v-115.21" ] ],
+    [ "sd1:VCC", "esp:3V3", "red", [ "v0.14", "h-259.2", "v-182.4" ] ],
+    [ "sd1:GND", "esp:GND.3", "black", [ "h38.4", "v-124.69" ] ],
+    [ "esp:25", "btn1:1.r", "green", [ "h-19.05", "v-67.2" ] ],
+    [ "esp:GND.1", "btn1:2.r", "black", [ "h0" ] ],
+    [ "rgb1:R", "esp:26", "green", [ "v38.4", "h163.05" ] ],
+    [ "rgb1:G", "esp:27", "green", [ "v0" ] ],
+    [ "rgb1:B", "esp:14", "green", [ "v0" ] ],
+    [ "led1:A", "esp:33", "green", [ "v0" ] ],
+    [ "esp:23", "sd1:DI", "green", [ "h182.4", "v201.69" ] ],
+    [ "esp:19", "sd1:DO", "green", [ "h134.4", "v105.49" ] ],
+    [ "esp:GND.1", "rgb1:COM", "black", [ "h0" ] ],
+    [ "esp:GND.1", "led1:C", "black", [ "h0" ] ],
+    [ "chip1:TX", "esp:16", "blue", [ "h40.21", "v201.6" ] ],
+    [ "chip1:RX", "esp:17", "yellow", [ "h59.41", "v201.6" ] ]
   ],
   "dependencies": {}
 }
