@@ -7,7 +7,7 @@
     { "type": "chip-gps-neo6", "id": "chip1", "top": -56.58, "left": 187.2,"attrs": {"src": "chips/gps-neo6.chip.json"}
 },
     { "type": "wokwi-mpu6050", "id": "imu1", "top": 51.82, "left": 232.72, "attrs": {} },
-    { "type": "wokwi-microsd-card", "id": "sd1", "top": 211.43, "left": 86.47, "attrs": {} },
+    { "type": "wokwi-microsd-card", "id": "sd1", "top": 211.43, "left": 86.47, "attrs": {"image": "sdcard.img"} },
     {
       "type": "wokwi-pushbutton",
       "id": "btn1",

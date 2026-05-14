@@ -15,6 +15,8 @@
 #include "core/states/recording_state.h"
 #include "core/states/ble_state.h"
 
+#include "storage/sd_manager.h"
+
 
 void setup() {
 
@@ -23,6 +25,8 @@ void setup() {
   initLEDs();
 
   initButton();
+
+  
 
   initGPS();
 
@@ -35,7 +39,9 @@ void setup() {
 
   Serial.println("MPU6050 connected successfully!");
 
-  
+  if (!initSD()){
+    while (1);
+  }
 
   updateState(DEVICE_OFF);
 }

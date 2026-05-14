@@ -2,10 +2,14 @@
 
 #include "../../gps/gps_manager.h"
 #include "../../imu/imu_manager.h"
+#include "../../storage/sd_manager.h"
 
 unsigned long lastSensorRead = 0;
 
 void handleRecordingState() {
+
+
+    
 
     updateGPS();
 
@@ -30,5 +34,7 @@ void handleRecordingState() {
 
         Serial.print("Accel X: ");
         Serial.println(imu.accelX);
+
+        appendSessionData(gps, imu);
     }
 }

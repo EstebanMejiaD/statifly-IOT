@@ -4,12 +4,33 @@
 
 #include "../leds/led_manager.h"
 
+#include "../storage/sd_manager.h"
+
 DeviceState currentState = DEVICE_OFF;
 
 void updateState(DeviceState newState) {
 
+  if (currentState == newState) {
+    return;
+  }
+
+  // ===== EXIT CURRENT STATE =====
+  switch (currentState) {
+
+    case DEVICE_RECORDING:
+
+      closeSession();
+
+      break;
+
+    default:
+      break;
+  }
+
+  // ===== CHANGE STATE =====
   currentState = newState;
 
+  // ===== ENTER NEW STATE =====
   switch (currentState) {
 
     case DEVICE_OFF:
@@ -25,6 +46,8 @@ void updateState(DeviceState newState) {
       setRGB(0, 1, 0);
 
       Serial.println("STATE: RECORDING");
+
+      startSession();
 
       break;
 
