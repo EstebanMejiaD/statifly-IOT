@@ -1,49 +1,61 @@
 #include "imu_manager.h"
 
+#include <Arduino.h>
 #include <Wire.h>
 
-#include <Adafruit_MPU6050.h>
+#define MPU_ADDR 0x68
 
-#include <Adafruit_Sensor.h>
-
-/*
- * Manejo del sensor IMU (MPU6050) para obtener datos de aceleración y giroscopio. 
- * Se inicializa el sensor, se configuran los rangos y se leen los datos en cada actualización. 
- * Los datos se almacenan en una estructura `IMUData` para su uso posterior en el programa.
- */
-Adafruit_MPU6050 mpu;
 IMUData imuData;
 
 bool initIMU() {
 
-  if (!mpu.begin()) {
-    return false;
-  }
+    Wire.begin(21, 22);
 
-  mpu.setAccelerometerRange(MPU6050_RANGE_2_G);
+    Wire.setClock(100000);
 
-  mpu.setGyroRange(MPU6050_RANGE_250_DEG);
+    // Wake up MPU
+    Wire.beginTransmission(MPU_ADDR);
 
-  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+    Wire.write(0x6B);
 
-  return true;
+    Wire.write(0);
+
+    if (Wire.endTransmission(true) != 0) {
+        return false;
+    }
+
+    return true;
 }
 
 void updateIMU() {
 
-  sensors_event_t a, g, temp;
+    Wire.beginTransmission(MPU_ADDR);
 
-  mpu.getEvent(&a, &g, &temp);
+    Wire.write(0x3B);
 
-  imuData.accelX = a.acceleration.x;
-  imuData.accelY = a.acceleration.y;
-  imuData.accelZ = a.acceleration.z;
+    if (Wire.endTransmission(false) != 0) {
+        return;
+    }
 
-  imuData.gyroX = g.gyro.x;
-  imuData.gyroY = g.gyro.y;
-  imuData.gyroZ = g.gyro.z;
+    int bytesReceived =
+        Wire.requestFrom((uint8_t)MPU_ADDR,
+                         (size_t)6,
+                         true);
+
+    if (bytesReceived != 6) {
+        return;
+    }
+
+    imuData.accelX =
+        (Wire.read() << 8) | Wire.read();
+
+    imuData.accelY =
+        (Wire.read() << 8) | Wire.read();
+
+    imuData.accelZ =
+        (Wire.read() << 8) | Wire.read();
 }
 
 IMUData getIMUData() {
-  return imuData;
+    return imuData;
 }

@@ -32,12 +32,12 @@ void setup() {
 
   if (!initIMU()) {
 
-    Serial.println("Failed to find MPU6050 chip!");
+    Serial.println("Failed to find IMU chip!");
 
     while (1);
   }
 
-  Serial.println("MPU6050 connected successfully!");
+  Serial.println("IMU connected successfully!");
 
   if (!initSD()){
     while (1);
@@ -49,7 +49,7 @@ void setup() {
 void loop() {
 
   updateButton();
-
+  
   switch (getCurrentState()) {
 
     case DEVICE_OFF:

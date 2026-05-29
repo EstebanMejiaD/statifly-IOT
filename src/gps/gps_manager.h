@@ -7,3 +7,5 @@ void initGPS();
 void updateGPS();
 
 GPSData getGPSData();
+
+void debugGPSRaw();

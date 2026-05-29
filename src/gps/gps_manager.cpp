@@ -37,6 +37,41 @@ void updateGPS() {
     gps.encode(c);
   }
 
+  /*
+   * DEBUG GPS STATUS
+   */
+
+  static unsigned long lastDebug = 0;
+
+  if (millis() - lastDebug > 2000) {
+
+    Serial.println();
+    Serial.println("====== GPS DEBUG ======");
+
+    Serial.print("Chars processed: ");
+    Serial.println(gps.charsProcessed());
+
+    Serial.print("Sentences with fix: ");
+    Serial.println(gps.sentencesWithFix());
+
+    Serial.print("Location valid: ");
+    Serial.println(gps.location.isValid());
+
+    Serial.print("Satellites valid: ");
+    Serial.println(gps.satellites.isValid());
+
+    Serial.print("Satellites: ");
+    Serial.println(gps.satellites.value());
+
+    Serial.println("=======================");
+
+    lastDebug = millis();
+  }
+
+  /*
+   * UPDATE DATA
+   */
+
   gpsData.valid = gps.location.isValid();
 
   if (gpsData.valid) {
@@ -50,9 +85,25 @@ void updateGPS() {
     gpsData.altitude = gps.altitude.meters();
 
     gpsData.satellites = gps.satellites.value();
+  } else {
+    gpsData.latitude = 0;
+    gpsData.longitude = 0;
+    gpsData.speedKmph = 0;
+    gpsData.altitude = 0;
+    gpsData.satellites = 0;
   }
 }
 
 GPSData getGPSData() {
   return gpsData;
+}
+
+void debugGPSRaw() {
+
+  while (gpsSerial.available()) {
+
+    char c = gpsSerial.read();
+
+    Serial.write(c);
+  }
 }
