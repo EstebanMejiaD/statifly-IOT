@@ -51,7 +51,8 @@ bool startSession() {
         return false;
     }
 
-    sessionFile.println("[");
+    sessionFile.println("{");
+    sessionFile.println("\"metrics\": [");
 
     firstEntry = true;
 
@@ -70,16 +71,43 @@ void appendSessionData(GPSData gps, IMUData imu) {
         sessionFile.println(",");
     }
 
+    //Inicio de estructura JSON
     String json = "{";
 
-    json += "\"latitude\":" + String(gps.latitude, 6) + ",";
-    json += "\"longitude\":" + String(gps.longitude, 6) + ",";
+    json += "\"timestamp\":" + String(gps.timestamp) + ",";
 
-    json += "\"accelX\":" + String(imu.accelX, 2) + ",";
-    json += "\"accelY\":" + String(imu.accelY, 2) + ",";
-    json += "\"accelZ\":" + String(imu.accelZ, 2);
+    json += "\"lat\":" +
+            String(gps.latitude, 6) + ",";
+
+    json += "\"lng\":" +
+            String(gps.longitude, 6) + ",";
+
+    json += "\"speed\":" +
+            String(gps.speedKmph, 2) + ",";
+
+    json += "\"acceleration\":" +
+            String(imu.acceleration, 2) + ",";
+
+    json += "\"ax\":" +
+            String(imu.accelX, 2) + ",";
+
+    json += "\"ay\":" +
+            String(imu.accelY, 2) + ",";
+
+    json += "\"az\":" +
+            String(imu.accelZ, 2) + ",";
+
+    json += "\"gx\":" +
+            String(imu.gyroX, 2) + ",";
+
+    json += "\"gy\":" +
+            String(imu.gyroY, 2) + ",";
+
+    json += "\"gz\":" +
+            String(imu.gyroZ, 2);
 
     json += "}";
+    //Fin de estructura JSON
 
     sessionFile.print(json);
 
@@ -96,6 +124,7 @@ void closeSession() {
 
     sessionFile.println();
     sessionFile.println("]");
+    sessionFile.println("}");
 
     sessionFile.flush();
 

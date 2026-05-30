@@ -1,6 +1,7 @@
 #include "gps_manager.h"
 
 #include <Arduino.h>
+#include <time.h>
 #include <TinyGPS++.h>
 #include <HardwareSerial.h>
 
@@ -28,16 +29,30 @@ void initGPS() {
   );
 }
 
-void updateGPS() {
+uint32_t buildUnixTimestamp() {
 
-  while (gpsSerial.available() > 0) {
+    if (!gps.date.isValid() ||
+        !gps.time.isValid()) {
 
-    char c = gpsSerial.read();
+        return 0;
+    }
 
-    gps.encode(c);
-  }
+    struct tm t;
 
-  /*
+    t.tm_year = gps.date.year() - 1900;
+    t.tm_mon  = gps.date.month() - 1;
+    t.tm_mday = gps.date.day();
+
+    t.tm_hour = gps.time.hour();
+    t.tm_min  = gps.time.minute();
+    t.tm_sec  = gps.time.second();
+
+    return mktime(&t);
+}
+
+
+void debugGPSStatus() {
+    /*
    * DEBUG GPS STATUS
    */
 
@@ -67,12 +82,28 @@ void updateGPS() {
 
     lastDebug = millis();
   }
+}
+
+void updateGPS() {
+
+  while (gpsSerial.available() > 0) {
+
+    char c = gpsSerial.read();
+
+    gps.encode(c);
+  }
+
+  debugGPSStatus();
+
 
   /*
    * UPDATE DATA
    */
 
-  gpsData.valid = gps.location.isValid();
+  gpsData.valid = gps.location.isValid() &&
+                  gps.date.isValid() &&
+                  gps.time.isValid() &&
+                  gps.satellites.value() >= 4;
 
   if (gpsData.valid) {
 
@@ -85,12 +116,16 @@ void updateGPS() {
     gpsData.altitude = gps.altitude.meters();
 
     gpsData.satellites = gps.satellites.value();
+
+    gpsData.timestamp = buildUnixTimestamp();
+
   } else {
     gpsData.latitude = 0;
     gpsData.longitude = 0;
     gpsData.speedKmph = 0;
     gpsData.altitude = 0;
     gpsData.satellites = 0;
+    gpsData.timestamp = 0;
   }
 }
 
@@ -107,3 +142,4 @@ void debugGPSRaw() {
     Serial.write(c);
   }
 }
+

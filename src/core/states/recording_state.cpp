@@ -7,34 +7,44 @@
 unsigned long lastSensorRead = 0;
 
 void handleRecordingState() {
-
-
     
-
     updateGPS();
+
+    if (millis() - lastSensorRead < 100) {
+        return;
+    }
+
+    lastSensorRead = millis();
 
     updateIMU();
 
-    if (millis() - lastSensorRead >= 100) {
+    GPSData gps = getGPSData();
 
-        lastSensorRead = millis();
+    // No guardar datos si el GPS aún no tiene FIX válido
+    if (!gps.valid ||
+        gps.latitude == 0 ||
+        gps.longitude == 0) {
 
-        GPSData gps = getGPSData();
+        static unsigned long lastMessage = 0;
 
-        IMUData imu = getIMUData();
+        if (millis() - lastMessage > 2000) {
 
-        if (gps.valid) {
+            Serial.print("Waiting GPS FIX... Satellites: ");
+            Serial.println(gps.satellites);
 
-            Serial.print("Latitude: ");
-            Serial.print(gps.latitude, 6);
-
-            Serial.print(", Longitude: ");
-            Serial.println(gps.longitude, 6);
+            lastMessage = millis();
         }
 
-        Serial.print("Accel X: ");
-        Serial.println(imu.accelX);
-
-        appendSessionData(gps, imu);
+        return;
     }
+
+    IMUData imu = getIMUData();
+
+    Serial.print("Latitude: ");
+    Serial.print(gps.latitude, 6);
+
+    Serial.print(", Longitude: ");
+    Serial.println(gps.longitude, 6);
+
+    appendSessionData(gps, imu);
 }

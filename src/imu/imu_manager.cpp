@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <math.h>
 
 #define MPU_ADDR 0x68
 
@@ -38,11 +39,13 @@ void updateIMU() {
     }
 
     int bytesReceived =
-        Wire.requestFrom((uint8_t)MPU_ADDR,
-                         (size_t)6,
-                         true);
+        Wire.requestFrom(
+            (uint8_t)MPU_ADDR,
+            (size_t)14,
+            true
+        );
 
-    if (bytesReceived != 6) {
+    if (bytesReceived != 14) {
         return;
     }
 
@@ -54,6 +57,31 @@ void updateIMU() {
 
     imuData.accelZ =
         (Wire.read() << 8) | Wire.read();
+
+    // temperatura (no la usamos todavía)
+
+    Wire.read();
+    Wire.read();
+
+    imuData.gyroX =
+        (Wire.read() << 8) | Wire.read();
+
+    imuData.gyroY =
+        (Wire.read() << 8) | Wire.read();
+
+    imuData.gyroZ =
+        (Wire.read() << 8) | Wire.read();
+
+    /*
+     * Magnitud total de aceleración
+     */
+
+    imuData.acceleration =
+        sqrt(
+            imuData.accelX * imuData.accelX +
+            imuData.accelY * imuData.accelY +
+            imuData.accelZ * imuData.accelZ
+        );
 }
 
 IMUData getIMUData() {

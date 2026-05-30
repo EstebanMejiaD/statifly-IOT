@@ -10,4 +10,5 @@ struct IMUData {
   float gyroY = 0;
   float gyroZ = 0;
 
+  float acceleration = 0;
 };
