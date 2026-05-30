@@ -75,6 +75,8 @@ void appendSessionData(GPSData gps, IMUData imu) {
     String json = "{";
 
     json += "\"timestamp\":" + String(gps.timestamp) + ",";
+    
+    json += "\"timestampMs\":" + String((unsigned long long)gps.timestampMs) + ",";
 
     json += "\"lat\":" +
             String(gps.latitude, 6) + ",";

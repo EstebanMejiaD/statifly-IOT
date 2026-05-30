@@ -13,5 +13,7 @@ struct GPSData
 
     uint32_t timestamp = 0;
 
+    uint64_t timestampMs = 0;
+
     bool valid = false;
 };

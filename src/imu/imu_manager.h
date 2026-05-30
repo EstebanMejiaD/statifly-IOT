@@ -7,3 +7,5 @@ bool initIMU();
 void updateIMU();
 
 IMUData getIMUData();
+
+void calibrateGyro();

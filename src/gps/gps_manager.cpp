@@ -119,6 +119,10 @@ void updateGPS() {
 
     gpsData.timestamp = buildUnixTimestamp();
 
+    gpsData.timestampMs =
+        ((uint64_t)gpsData.timestamp * 1000ULL) +
+        (millis() % 1000);
+
   } else {
     gpsData.latitude = 0;
     gpsData.longitude = 0;
@@ -126,6 +130,7 @@ void updateGPS() {
     gpsData.altitude = 0;
     gpsData.satellites = 0;
     gpsData.timestamp = 0;
+    gpsData.timestampMs = 0;
   }
 }
 
