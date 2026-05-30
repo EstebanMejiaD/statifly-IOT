@@ -49,32 +49,35 @@ void updateIMU() {
         return;
     }
 
-    imuData.accelX =
+    int16_t rawAccelX =
         (Wire.read() << 8) | Wire.read();
 
-    imuData.accelY =
+    int16_t rawAccelY =
         (Wire.read() << 8) | Wire.read();
 
-    imuData.accelZ =
+    int16_t rawAccelZ =
         (Wire.read() << 8) | Wire.read();
 
-    // temperatura (no la usamos todavía)
+    imuData.accelX = rawAccelX / 16384.0f;
+    imuData.accelY = rawAccelY / 16384.0f;
+    imuData.accelZ = rawAccelZ / 16384.0f;
 
+    // Temperatura
     Wire.read();
     Wire.read();
 
-    imuData.gyroX =
+    int16_t rawGyroX =
         (Wire.read() << 8) | Wire.read();
 
-    imuData.gyroY =
+    int16_t rawGyroY =
         (Wire.read() << 8) | Wire.read();
 
-    imuData.gyroZ =
+    int16_t rawGyroZ =
         (Wire.read() << 8) | Wire.read();
 
-    /*
-     * Magnitud total de aceleración
-     */
+    imuData.gyroX = rawGyroX / 131.0f;
+    imuData.gyroY = rawGyroY / 131.0f;
+    imuData.gyroZ = rawGyroZ / 131.0f;
 
     imuData.acceleration =
         sqrt(

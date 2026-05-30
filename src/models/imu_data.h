@@ -1,14 +1,24 @@
 #pragma once
-
+#include <stdint.h>
 struct IMUData {
 
-  float accelX = 0;
-  float accelY = 0;
-  float accelZ = 0;
+    // RAW
+    int16_t accelRawX;
+    int16_t accelRawY;
+    int16_t accelRawZ;
 
-  float gyroX = 0;
-  float gyroY = 0;
-  float gyroZ = 0;
+    int16_t gyroRawX;
+    int16_t gyroRawY;
+    int16_t gyroRawZ;
 
-  float acceleration = 0;
+    // Convertidos
+    float accelX;
+    float accelY;
+    float accelZ;
+
+    float gyroX;
+    float gyroY;
+    float gyroZ;
+
+    float acceleration;
 };
