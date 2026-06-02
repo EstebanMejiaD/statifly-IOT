@@ -27,6 +27,22 @@ void initGPS() {
     GPS_RX_PIN,
     GPS_TX_PIN
   );
+
+  const uint8_t setRate5Hz[] = {
+  0xB5,0x62,
+  0x06,0x08,
+  0x06,0x00,
+  0xC8,0x00,
+  0x01,0x00,
+  0x01,0x00,
+  0xDE,0x6A
+ };
+
+gpsSerial.write(setRate5Hz,sizeof(setRate5Hz));
+
+delay(200);
+
+  
 }
 
 uint32_t buildUnixTimestamp() {
@@ -82,6 +98,20 @@ void debugGPSStatus() {
 
     lastDebug = millis();
   }
+
+  static uint32_t lastGpsUpdate = 0;
+
+   if (gps.location.isUpdated()) {
+
+    Serial.print("GPS update interval: ");
+
+    Serial.println(
+        millis() - lastGpsUpdate
+    );
+
+    lastGpsUpdate = millis();
+}
+
 }
 
 void updateGPS() {
@@ -120,8 +150,8 @@ void updateGPS() {
     gpsData.timestamp = buildUnixTimestamp();
 
     gpsData.timestampMs =
-        ((uint64_t)gpsData.timestamp * 1000ULL) +
-        (millis() % 1000);
+    ((uint64_t)gpsData.timestamp * 1000ULL) +
+    (gps.time.centisecond() * 10ULL);
 
   } else {
     gpsData.latitude = 0;
